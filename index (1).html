@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petroleum Calculator </title>
+    <!-- Google Fonts for Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* General Styling */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0d324d, #7f5a83);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: #fff;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Oil Drop Animation */
+        .oil-drop {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #a8e6cf;
+            border-radius: 50%;
+            animation: fall 6s linear infinite;
+            opacity: 0.7;
+            box-shadow: 0 0 10px #a8e6cf, 0 0 20px #a8e6cf;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-100px) scale(0.5); opacity: 0; }
+            50% { transform: translateY(50vh) scale(1); opacity: 1; }
+            100% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+            backdrop-filter: blur(10px);
+            animation: fadeIn 1s ease-in-out;
+            position: relative;
+            z-index: 2;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #a8e6cf;
+            font-weight: 600;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .buttons-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .nav-button {
+            background: linear-gradient(135deg, #a8e6cf, #dcedc1);
+            border: none;
+            border-radius: 10px;
+            padding: 15px 20px;
+            font-size: 18px;
+            color: #0d324d;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 5px 15px rgba(168, 230, 207, 0.3);
+        }
+
+        .nav-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(168, 230, 207, 0.5);
+        }
+
+        .nav-button:active {
+            transform: translateY(0);
+            box-shadow: 0 5px 15px rgba(168, 230, 207, 0.3);
+        }
+
+        .section {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: 500;
+            color: #a8e6cf;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            border: 2px solid rgba(168, 230, 207, 0.3);
+            border-radius: 10px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transition: border-color 0.3s ease, background 0.3s ease;
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        input:focus {
+            border-color: #a8e6cf;
+            background: rgba(255, 255, 255, 0.2);
+            outline: none;
+        }
+
+        button {
+            background: linear-gradient(135deg, #a8e6cf, #dcedc1);
+            color: #0d324d;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 5px 15px rgba(168, 230, 207, 0.3);
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(168, 230, 207, 0.5);
+        }
+
+        button:active {
+            transform: translateY(0);
+            box-shadow: 0 5px 15px rgba(168, 230, 207, 0.3);
+        }
+
+        .result {
+            margin-top: 15px;
+            font-size: 16px;
+            font-weight: 500;
+            color: #a8e6cf;
+            animation: slideIn 0.5s ease-in-out;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        .back-button {
+            margin-top: 20px;
+            display: inline-block;
+            color: #a8e6cf;
+            text-decoration: none;
+            font-size: 14px;
+            transition: opacity 0.3s ease;
+            cursor: pointer;
+        }
+
+        .back-button:hover {
+            opacity: 0.8;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
+
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+
+        /* Footer Styling */
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            font-size: 14px;
+            animation: slideUp 1s ease-in-out;
+            z-index: 3;
+        }
+
+        footer span {
+            color: #a8e6cf;
+            font-weight: 600;
+            animation: glow 2s infinite alternate;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 5px #a8e6cf, 0 0 10px #a8e6cf; }
+            to { text-shadow: 0 0 10px #a8e6cf, 0 0 20px #a8e6cf; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Oil Drop Animation -->
+    <div class="oil-drop" style="left: 10%; animation-delay: 0s;"></div>
+    <div class="oil-drop" style="left: 20%; animation-delay: 1s;"></div>
+    <div class="oil-drop" style="left: 30%; animation-delay: 2s;"></div>
+    <div class="oil-drop" style="left: 40%; animation-delay: 3s;"></div>
+    <div class="oil-drop" style="left: 50%; animation-delay: 4s;"></div>
+    <div class="oil-drop" style="left: 60%; animation-delay: 5s;"></div>
+    <div class="oil-drop" style="left: 70%; animation-delay: 6s;"></div>
+    <div class="oil-drop" style="left: 80%; animation-delay: 7s;"></div>
+    <div class="oil-drop" style="left: 90%; animation-delay: 8s;"></div>
+
+    <div class="container">
+        <h1> Petroleum  Calculator </h1>
+
+        <!-- Navigation Menu -->
+        <div class="buttons-container" id="mainMenu">
+            <button class="nav-button" onclick="showSection('timeSection')">
+                Calculate Discharge Time
+            </button>
+            <button class="nav-button" onclick="showSection('minMaxSection')">
+                Calculate Min and Max Limits
+            </button>
+            <button class="nav-button" onclick="showSection('tempSection')">
+                Calculate Average Temperature
+            </button>
+        </div>
+
+        <!-- Discharge Time Section -->
+        <div id="timeSection" class="section">
+            <h2>Calculate Discharge Time</h2>
+            <label for="rate">Discharge Rate (ton/hour):</label>
+            <input type="text" id="rate" placeholder="Enter discharge rate" oninput="formatNumber(this)">
+            <label for="quantity">Quantity (ton):</label>
+            <input type="text" id="quantity" placeholder="Enter quantity" oninput="formatNumber(this)">
+            <button onclick="calculateTime()">Calculate Time</button>
+            <div id="timeResult" class="result"></div>
+            <a class="back-button" onclick="showMainMenu()">Back</a>
+        </div>
+
+        <!-- Min and Max Limits Section -->
+        <div id="minMaxSection" class="section">
+            <h2>Calculate Min and Max Limits</h2>
+            <label for="baseQuantity">Base Quantity (ton):</label>
+            <input type="text" id="baseQuantity" placeholder="Enter base quantity" oninput="formatNumber(this)">
+            <label for="percentage">Percentage (%):</label>
+            <input type="number" id="percentage" placeholder="Enter percentage">
+            <button onclick="calculateMinMax()">Calculate Limits</button>
+            <div id="minMaxResult" class="result"></div>
+            <a class="back-button" onclick="showMainMenu()">Back</a>
+        </div>
+
+        <!-- Average Temperature Section -->
+        <div id="tempSection" class="section">
+            <h2>Calculate Average Temperature</h2>
+            <label for="temp1">Temperature 1:</label>
+            <input type="number" id="temp1" placeholder="Enter temperature 1">
+            <label for="temp2">Temperature 2:</label>
+            <input type="number" id="temp2" placeholder="Enter temperature 2">
+            <label for="temp3">Temperature 3:</label>
+            <input type="number" id="temp3" placeholder="Enter temperature 3">
+            <button onclick="calculateAverageTemp()">Calculate Average</button>
+            <div id="tempResult" class="result"></div>
+            <a class="back-button" onclick="showMainMenu()">Back</a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        Developed by <span>Ahmed Jasim</span>
+    </footer>
+
+    <script>
+        // Prevent right-click
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+
+        // Prevent copying with Ctrl+C
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'c') {
+                e.preventDefault();
+                alert('Copying is disabled!');
+            }
+        });
+
+        // Show the selected section and hide others
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+            document.getElementById('mainMenu').style.display = 'none';
+        }
+
+        // Return to the main menu
+        function showMainMenu() {
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById('mainMenu').style.display = 'flex';
+        }
+
+        // Format numbers with commas
+        function formatNumber(input) {
+            let value = input.value.replace(/,/g, '');
+            if (!isNaN(value) && value !== '') {
+                input.value = parseFloat(value).toLocaleString();
+            }
+        }
+
+        // Calculate discharge time
+        function calculateTime() {
+            const rate = parseFloat(document.getElementById('rate').value.replace(/,/g, ''));
+            const quantity = parseFloat(document.getElementById('quantity').value.replace(/,/g, ''));
+
+            if (isNaN(rate) || isNaN(quantity) || rate <= 0 || quantity <= 0) {
+                document.getElementById('timeResult').innerText = "Please enter valid values!";
+                document.getElementById('timeResult').classList.add('shake');
+                setTimeout(() => {
+                    document.getElementById('timeResult').classList.remove('shake');
+                }, 500);
+                return;
+            }
+
+            const timeInHours = quantity / rate;
+            const now = new Date();
+            const endTime = new Date(now.getTime() + timeInHours * 60 * 60 * 1000);
+
+            // Format the date and time in English
+            const formattedEndTime = formatDateEnglish(endTime);
+
+            document.getElementById('timeResult').innerText = 
+                `Time Required: ${timeInHours.toFixed(2)} hours\n` +
+                `End Time: ${formattedEndTime}`;
+        }
+
+        // Format date and time in English
+        function formatDateEnglish(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const seconds = String(date.getSeconds()).padStart(2, '0');
+            return `${year}/${month}/${day}, ${hours}:${minutes}:${seconds}`;
+        }
+
+        // Calculate min and max limits
+        function calculateMinMax() {
+            const baseQuantity = parseFloat(document.getElementById('baseQuantity').value.replace(/,/g, ''));
+            const percentage = parseFloat(document.getElementById('percentage').value);
+
+            if (isNaN(baseQuantity) || isNaN(percentage) || baseQuantity <= 0 || percentage <= 0) {
+                document.getElementById('minMaxResult').innerText = "Please enter valid values!";
+                document.getElementById('minMaxResult').classList.add('shake');
+                setTimeout(() => {
+                    document.getElementById('minMaxResult').classList.remove('shake');
+                }, 500);
+                return;
+            }
+
+            const minQuantity = baseQuantity * (1 - percentage / 100);
+            const maxQuantity = baseQuantity * (1 + percentage / 100);
+
+            document.getElementById('minMaxResult').innerText = 
+                `Minimum: ${minQuantity.toLocaleString()} ton\n` +
+                `Maximum: ${maxQuantity.toLocaleString()} ton`;
+        }
+
+        // Calculate average temperature
+        function calculateAverageTemp() {
+            const temp1 = parseFloat(document.getElementById('temp1').value);
+            const temp2 = parseFloat(document.getElementById('temp2').value);
+            const temp3 = parseFloat(document.getElementById('temp3').value);
+
+            const values = [temp1, temp2, temp3].filter(value => !isNaN(value));
+            const count = values.length;
+
+            if (count === 0) {
+                document.getElementById('tempResult').innerText = "Please enter valid values!";
+                document.getElementById('tempResult').classList.add('shake');
+                setTimeout(() => {
+                    document.getElementById('tempResult').classList.remove('shake');
+                }, 500);
+                return;
+            }
+
+            const sum = values.reduce((acc, val) => acc + val, 0);
+            const averageTemp = sum / count;
+
+            document.getElementById('tempResult').innerText = 
+                `Average Temperature: ${averageTemp.toFixed(2)}°C`;
+        }
+    </script>
+
+</body>
+</html>
